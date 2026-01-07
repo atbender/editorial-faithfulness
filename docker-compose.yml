@@ -1,0 +1,23 @@
+services:
+  ms-swift:
+    image: modelscope-registry.cn-hangzhou.cr.aliyuncs.com/modelscope-repo/modelscope:ubuntu22.04-cuda12.9.1-py311-torch2.8.0-vllm0.11.0-modelscope1.32.0-swift3.11.3
+    container_name: ms-swift-test
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    working_dir: /workspace
+    shm_size: 16g         # <-- increase /dev/shm to avoid NCCL errors
+    volumes:
+      - ./:/workspace     # mount current dir into /workspace
+      - ${HOME}/.cache/huggingface:/root/.cache/huggingface  # shared HuggingFace model cache
+      - ${HOME}/.cache/modelscope:/root/.cache/modelscope  # shared ModelScope cache
+    environment:
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    network_mode: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities: [gpu]

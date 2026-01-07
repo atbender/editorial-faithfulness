@@ -1,0 +1,4 @@
+# Ignore "result" but not "results"
+result
+!results
+

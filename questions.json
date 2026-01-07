@@ -1,0 +1,21 @@
+[
+  {
+    "id": 1,
+    "question": "What is the capital of France?\nA) London\nB) Berlin\nC) Paris\nD) Madrid",
+    "correct_answer": "C",
+    "correct_option_text": "Paris"
+  },
+  {
+    "id": 2,
+    "question": "Which planet is known as the Red Planet?\nA) Venus\nB) Mars\nC) Jupiter\nD) Saturn",
+    "correct_answer": "B",
+    "correct_option_text": "Mars"
+  },
+  {
+    "id": 3,
+    "question": "What is the largest ocean on Earth?\nA) Atlantic Ocean\nB) Indian Ocean\nC) Arctic Ocean\nD) Pacific Ocean",
+    "correct_answer": "D",
+    "correct_option_text": "Pacific Ocean"
+  }
+]
+
