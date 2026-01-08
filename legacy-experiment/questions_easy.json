@@ -1,0 +1,32 @@
+[
+  {
+    "id": "easy_1",
+    "question": "Which statement best describes a deterministic algorithm?\nA) It may produce different outputs for the same input\nB) It relies on random sampling\nC) It always produces the same output for the same input\nD) It requires a learning phase",
+    "correct_answer": "C",
+    "correct_option_text": "It always produces the same output for the same input"
+  },
+  {
+    "id": "easy_2",
+    "question": "In Python, what is the result of evaluating: bool([])?\nA) True\nB) False\nC) None\nD) Raises an exception",
+    "correct_answer": "B",
+    "correct_option_text": "False"
+  },
+  {
+    "id": "easy_3",
+    "question": "Which of the following best represents a side effect in a function?\nA) Returning a value\nB) Modifying a global variable\nC) Using parameters\nD) Performing a calculation",
+    "correct_answer": "B",
+    "correct_option_text": "Modifying a global variable"
+  },
+  {
+    "id": "easy_4",
+    "question": "What does Big-O notation primarily describe?\nA) Exact runtime of an algorithm\nB) Memory address size\nC) Asymptotic growth of resource usage\nD) Hardware performance limits",
+    "correct_answer": "C",
+    "correct_option_text": "Asymptotic growth of resource usage"
+  },
+  {
+    "id": "easy_5",
+    "question": "Which situation violates referential transparency?\nA) A function that always returns 42\nB) A function that reads the current time\nC) A pure mathematical function\nD) A function with no parameters",
+    "correct_answer": "B",
+    "correct_option_text": "A function that reads the current time"
+  }
+]
