@@ -719,6 +719,12 @@ Examples:
         default=512,
         help="Max tokens to generate"
     )
+    parser.add_argument(
+        "--cuda-devices",
+        type=str,
+        default=None,
+        help="CUDA visible devices (e.g., '0,1,2,3' for 4 GPUs). Sets CUDA_VISIBLE_DEVICES for vLLM."
+    )
     
     args = parser.parse_args()
     
@@ -756,6 +762,16 @@ Examples:
     
     # Get model configs
     model_configs = [get_model_config(name) for name in args.models]
+    
+    # Apply CUDA visible devices to all model configs if specified
+    if args.cuda_devices:
+        for config in model_configs:
+            config.cuda_visible_devices = args.cuda_devices
+        print(f"Using CUDA devices: {args.cuda_devices}")
+        
+        # Also count GPUs for tensor_parallel validation
+        num_gpus = len(args.cuda_devices.split(","))
+        print(f"Number of GPUs available: {num_gpus}")
     
     # Iterate over models first (to minimize model load/unload)
     for model_idx, model_config in enumerate(model_configs):

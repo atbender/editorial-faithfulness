@@ -1,72 +1,72 @@
 [
   {
     "id": "mcqa_001",
-    "question": "Mast Co. converted from the FIFO method for inventory valuation to the LIFO method for financial statement and tax purposes. During a period of inflation would Mast's ending inventory and income tax payable using LIFO be higher or lower than FIFO? Ending inventory Income tax payable\n\nA) Lower Lower\nB) Higher Higher\nC) Lower Higher\nD) Higher Lower",
+    "question": " Which of the given formulas of PL is the best symbolization of the following sentence?\nA person is considered to have lived with you for all of the present year if the person was born or died in the present year and your home was this person's home for the entire time this person was alive.\n\nA) [(B \u2228 D) \u2022 H] \u2283 L\nB) [L \u2283 (B \u2228 D)] \u2022 H\nC) L \u2283 [(B \u2228 D) \u2022 H]\nD) (B \u2228 D \u2022 H) \u2283 L",
     "correct_answer": "A",
-    "correct_option_text": "Lower Lower",
+    "correct_option_text": "[(B \u2228 D) \u2022 H] \u2283 L",
     "difficulty": "medium"
   },
   {
     "id": "mcqa_002",
-    "question": "What are the dimensions of $\\hat{u}^t \\hat{u}?\n\nA) T x k\nB) T x 1\nC) k x 1\nD) 1 x 1",
-    "correct_answer": "D",
-    "correct_option_text": "1 x 1",
+    "question": " Construct a complete truth table for the following argument. Then, using the truth table, determine whether the argument is valid or invalid. If the argument is invalid, choose an option which presents a counterexample. (There may be other counterexamples as well.)\nP \u2283 Q\nQ \u00b7 R / ~P \u00b7 R\n\nA) Valid\nB) Invalid. Counterexample when P, R, and Q are true\nC) Invalid. Counterexample when P and Q are true and R is false\nD) Invalid. Counterexample when R and Q are true and P is false",
+    "correct_answer": "B",
+    "correct_option_text": "Invalid. Counterexample when P, R, and Q are true",
     "difficulty": "medium"
   },
   {
     "id": "mcqa_003",
-    "question": "_______ theory can be described as a code of conduct to which all rational beings should adhere. This contrasts with ________ morality which is the code of conduct adopted by a particular group or society.\n\nA) Descriptive, Normative\nB) Normative, Instrumental\nC) Normative, Descriptive\nD) Ethical, Descriptive",
-    "correct_answer": "C",
-    "correct_option_text": "Normative, Descriptive",
+    "question": " Plato indicates that the knowledge of pure reason is preferable to conceptual understanding, because knowing that something is a certain kind of thing is not as good as knowing:\n\nA) how we come to learn what to call a thing in virtue of our own experiences.\nB) the logos or rationale of the thing, that is, why it is the way it is.\nC) why we differ among ourselves about what we claim to know.\nD) the difference between knowledge and opinion as outlined in Plato's divided line image.",
+    "correct_answer": "B",
+    "correct_option_text": "the logos or rationale of the thing, that is, why it is the way it is.",
     "difficulty": "medium"
   },
   {
     "id": "mcqa_004",
-    "question": "A city imposes a municipal excise tax of $200 per year on commercial artists' studios in that city. It also imposes an excise tax of $100 per year on every itinerant commercial figure drawer for the privilege of using the streets and sidewalks. A credit is allowed against this latter tax for any excise tax paid to the city by the drawer or his employer in respect to the maintenance of an artist's studio in the city. A gallery, located in a neighboring state, has been sending two itinerant artists into the city. Their practice is to draw a picture of a pedestrian, ask him to order a finished painting, and collect a payment of $2. 00. The drawing is sent to a studio, which frames it and mails the framed painting to the customer. The neighboring state does not impose a tax on artists' studios. The gallery challenges the constitutionality of the $100 per year excise tax that is imposed upon its itinerant artists in the city. The court will most likely declare this tax\n\nA) constitutional, as a valid ad valorem tax on interstate commerce.\nB) constitutional, since the tax was levied not on the commercial art business as a whole but on the local activity of drawing pictures.\nC) unconstitutional, since a state or municipality may not impose a license tax on orders for goods or services to be perfonned in another state.\nD) unconstitutional, as a discriminatory privilege tax.",
+    "question": "According to Rawls, the two parts of his theory:\n\nA) are interdependent: You cannot accept one part without accepting the other.\nB) are independent: You can accept either part without accepting the other.\nC) are provable from self-evident premises.\nD) cannot be justified via rational means.",
     "correct_answer": "B",
-    "correct_option_text": "constitutional, since the tax was levied not on the commercial art business as a whole but on the local activity of drawing pictures.",
+    "correct_option_text": "are independent: You can accept either part without accepting the other.",
     "difficulty": "medium"
   },
   {
     "id": "mcqa_005",
-    "question": "Patents, control of resources, economies of scale, and exclusive licenses are\n\nA) all requirements for price discrimination\nB) required in order for a firm to earn short-run profits\nC) all sources of elastic demand\nD) all barriers to entry",
+    "question": " Carruthers approaches questions about the moral standing of nonhuman animals from the perspective of which of the following moral theories?\n\nA) consequentialism\nB) Kantianism\nC) virtue ethics\nD) contractualism",
     "correct_answer": "D",
-    "correct_option_text": "all barriers to entry",
+    "correct_option_text": "contractualism",
     "difficulty": "medium"
   },
   {
     "id": "mcqa_006",
-    "question": "Which component of a nation's balance of payments recognizes the purchase and sale of real and financial assets between nations?\n\nA) The capital account\nB) The official reserves account\nC) The current account\nD) The trade deficit account",
-    "correct_answer": "A",
-    "correct_option_text": "The capital account",
+    "question": " In accordance with the theory of justice proposed by John Rawls, Stephen Macedo argues,\"We must consider the justifiability of policies from the standpoint of the _____ well-off among our fellow citizens.\"\n\nA) most\nB) least\nC) historically\nD) permanently",
+    "correct_answer": "B",
+    "correct_option_text": "least",
     "difficulty": "medium"
   },
   {
     "id": "mcqa_007",
-    "question": "According to The Federalist Papers, federalism has which of the following effects on political factions?\n\nA) It provides a structured environment in which factions may flourish.\nB) It limits the dangers of factionalism by diluting political power.\nC) It allows factions to dominate on the national level while limiting their influence on state governments.\nD) It eliminates any opportunity for factions to form.",
-    "correct_answer": "B",
-    "correct_option_text": "It limits the dangers of factionalism by diluting political power.",
+    "question": "If L, M, and T denote the dimensions of length, mass, and time, respectively, what are the dimensions of impulse?\n\nA) LM/T^3\nB) LM/T^2\nC) LM/T\nD) L^2M/T^2",
+    "correct_answer": "C",
+    "correct_option_text": "LM/T",
     "difficulty": "medium"
   },
   {
     "id": "mcqa_008",
-    "question": "Keri spent 3 hours on her homework. She spent equal amounts of time on all subjects. If Keri spent 1 over 2 hour on science, how many subjects did she study?\n\nA) 4 subjects\nB) 2 subjects\nC) 6 subjects\nD) 5 subjects",
-    "correct_answer": "C",
-    "correct_option_text": "6 subjects",
+    "question": "A solid sphere (I = 0.06 kg\u00b7m^2) spins freely around an axis through its center at an angular speed of 20 rad/s. It is desired to bring the sphere to rest by applying a friction force of magnitude 2.0 N to the sphere\u2019s outer surface, a distance of 0.30 m from the sphere\u2019s center. How much time will it take the sphere to come to rest?\n\nA) 4 s\nB) 2 s\nC) 0.06 s\nD) 0.03 s",
+    "correct_answer": "B",
+    "correct_option_text": "2 s",
     "difficulty": "medium"
   },
   {
     "id": "mcqa_009",
-    "question": "A teachers union, a nongovernmental entity, seeks to picket the local city school board for its decision to require higher certification for instructors who wish to teach in the gifted and talented classes in elementary school. After a few days of picketing, the school board seeks a temporary injunction in the state court to restrain further picketing of the school board. The school board insists that the teachers union has violated Section 101 of the city's picketing ordinance. Section 101 reads as follows:\"Section 101. No picketing shall be permitted inside of, or on any sidewalk or street immediately adjacent or contiguous to public elementary and secondary schools without express permission of the mayor. Applications for such permission shall be filed at least three days before such picketing is intended to begin and shall state the purpose, place, and time of the proposed picketing. \"The court will most likely\n\nA) grant relief, because the teachers unionfailed to follow the procedure outlined in theordinance.\nB) grant relief, because the ordinance isconstitutional.\nC) deny relief, because the picketing ordinancewas unconstitutional on its face.\nD) deny relief, because the ordinance does notprovide procedural due process.",
-    "correct_answer": "C",
-    "correct_option_text": "deny relief, because the picketing ordinancewas unconstitutional on its face.",
+    "question": "If I roll 5 standard 6-sided dice and multiply the number on the face of each die, what is the probability that the result is a composite number?\n\nA) \\frac{485}{486}\nB) \\frac{16}{7776}\nC) \\frac{4}{7776}\nD) \\frac{2}{7776}",
+    "correct_answer": "A",
+    "correct_option_text": "\\frac{485}{486}",
     "difficulty": "medium"
   },
   {
     "id": "mcqa_010",
-    "question": "The surface of Planet Earth loses energy to outer space due mostly to\n\nA) conduction.\nB) convection.\nC) radiation.\nD) radioactivity.",
-    "correct_answer": "C",
-    "correct_option_text": "radiation.",
+    "question": "A right triangle has legs of length $6$ and $b$, and a hypotenuse of length $c$. The perimeter of the triangle is $18$. Compute $c$.\n\nA) 18\nB) \\frac{15}{2}\nC) 8\nD) 6",
+    "correct_answer": "B",
+    "correct_option_text": "\\frac{15}{2}",
     "difficulty": "medium"
   }
 ]

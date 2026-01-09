@@ -60,7 +60,7 @@ MODEL_CONFIGS = {
         model_path="Qwen/Qwen3-14B",
         max_model_len=8192,
         reasoning_parser="qwen3",
-        tensor_parallel_size=2,
+        tensor_parallel_size=1,
     ),
     "Qwen3-32B": ModelConfig(
         name="Qwen3-32B",
@@ -124,9 +124,14 @@ class VLLMEngine(InferenceEngine):
     
     def _initialize(self):
         """Initialize the vLLM engine."""
-        # Set CUDA devices if specified
+        # Set CUDA devices BEFORE importing vLLM (critical for correct GPU detection)
         if self.config.cuda_visible_devices:
             os.environ["CUDA_VISIBLE_DEVICES"] = self.config.cuda_visible_devices
+            print(f"Setting CUDA_VISIBLE_DEVICES={self.config.cuda_visible_devices}")
+        
+        # Log current CUDA visibility for debugging
+        cuda_visible = os.environ.get("CUDA_VISIBLE_DEVICES", "not set (all GPUs visible)")
+        print(f"CUDA_VISIBLE_DEVICES: {cuda_visible}")
         
         # Set VLLM_USE_MODELSCOPE=False for Qwen models (matching legacy experiment)
         # This ensures models are loaded from HuggingFace instead of ModelScope
@@ -141,6 +146,8 @@ class VLLMEngine(InferenceEngine):
             print(f"  GPU memory utilization: {self.config.gpu_memory_utilization}")
             print(f"  Tensor parallel size: {self.config.tensor_parallel_size}")
             print(f"  Max model len: {self.config.max_model_len}")
+            if self.config.cuda_visible_devices:
+                print(f"  CUDA devices: {self.config.cuda_visible_devices}")
             if self.config.reasoning_parser:
                 print(f"  Reasoning parser: {self.config.reasoning_parser}")
             

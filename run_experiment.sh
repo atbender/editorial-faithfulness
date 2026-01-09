@@ -5,8 +5,8 @@ set -e
 # Default configuration
 PARADIGM="ethical_information_access authority_bias reframing_bias"
 
-MODEL="Qwen3-4B DeepSeek-R1-Distill-Qwen-7B Qwen3-8B Qwen3-14B Qwen3-32B mistralai/Ministral-3-8B-Reasoning-2512"
-
+MODEL="Qwen3-32B mistralai/Ministral-3-8B-Reasoning-2512"
+# Qwen3-14B Qwen3-4B DeepSeek-R1-Distill-Qwen-7B Qwen3-8B
 
 QUESTIONS_FILE="data/mcqa-entries.json"
 ENGINE="vllm"
@@ -16,6 +16,7 @@ OUTPUT_DIR="results"
 SEED="42"
 TEMPERATURE="0.7"
 MAX_TOKENS="512"
+CUDA_DEVICES="0,1,2,3,4,5,6,7"
 
 PARADIGMS_ARGS=()
 MODELS_ARGS=()
@@ -77,6 +78,10 @@ while [[ $# -gt 0 ]]; do
             MAX_TOKENS="$2"
             shift 2
             ;;
+        --cuda-devices|--gpus)
+            CUDA_DEVICES="$2"
+            shift 2
+            ;;
         --list|-l)
             python run_experiment.py --list
             exit 0
@@ -99,6 +104,7 @@ Options:
     --seed, -s N                    Random seed (default: 42)
     --temperature, -t FLOAT         Sampling temperature (default: 0.7)
     --max-tokens N                  Max tokens to generate (default: 512)
+    --cuda-devices, --gpus DEVICES  CUDA visible devices (e.g., "0,1,2,3" for 4 GPUs)
     --list, -l                      List available paradigms and models
     --help, -h                      Show this help message
 
@@ -156,6 +162,13 @@ CMD=(
 
 if [[ "$ENGINE" == "http" ]]; then
     CMD+=(--api-url "$API_URL")
+fi
+
+if [[ -n "$CUDA_DEVICES" ]]; then
+    CMD+=(--cuda-devices "$CUDA_DEVICES")
+    # Export CUDA_VISIBLE_DEVICES BEFORE running Python so vLLM sees all GPUs
+    export CUDA_VISIBLE_DEVICES="$CUDA_DEVICES"
+    echo "Exported CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
 fi
 
 CMD+=("${EXTRA_ARGS[@]}")
