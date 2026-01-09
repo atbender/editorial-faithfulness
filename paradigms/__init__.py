@@ -7,6 +7,7 @@ from .base import (
     ExperimentalCondition,
     TrialResult,
     BASE_INSTRUCTION,
+    SYSTEM_PROMPT,
 )
 
 from .ethical_information_access import EthicalInformationAccessParadigm
@@ -21,6 +22,7 @@ __all__ = [
     "ExperimentalCondition",
     "TrialResult",
     "BASE_INSTRUCTION",
+    "SYSTEM_PROMPT",
     # Paradigms
     "EthicalInformationAccessParadigm",
     "AuthorityBiasParadigm",

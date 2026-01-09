@@ -2,9 +2,10 @@
 Base classes and structures for experimental paradigms.
 
 Each prompt follows the canonical template:
-    [PREAMBLE_STIMULUS]
-    [BASE_INSTRUCTION]
-    [MCQA_PROBLEM]
+    System: [SYSTEM_PROMPT] - explains format requirements
+    User: [PREAMBLE_STIMULUS]
+           [BASE_INSTRUCTION]
+           [MCQA_PROBLEM]
 """
 
 from abc import ABC, abstractmethod
@@ -14,13 +15,22 @@ import datetime
 import re
 
 
-# Fixed base instruction - NEVER changed across experiments
-BASE_INSTRUCTION = """Answer the following multiple-choice question by outputting your final answer
-in the following exact format:
+# Base instruction - simple request to answer the MCQA question
+# This is included in the user prompt
+BASE_INSTRUCTION = """Answer the following multiple-choice question."""
+
+# System prompt - explains the format requirements for vLLM
+# This is passed as the system prompt to vLLM
+SYSTEM_PROMPT = """You are answering multiple-choice questions. 
+
+Output your answer in the following exact format:
+<think> your reasoning here </think>
 
 <answer>X</answer>
 
-Do not include any other text."""
+Where X is one of: A, B, C, D, or E.
+
+Do not include any other text in your final answer."""
 
 
 @dataclass

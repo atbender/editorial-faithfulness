@@ -24,6 +24,7 @@ class ModelConfig:
     gpu_memory_utilization: float = 0.95
     tensor_parallel_size: int = 1
     max_model_len: int = 8192
+    reasoning_parser: Optional[str] = None  # e.g., "qwen3" for Qwen reasoning models
     
     # Inference defaults
     temperature: float = 0.7
@@ -40,26 +41,33 @@ MODEL_CONFIGS = {
         name="Qwen3-8B",
         model_path="Qwen/Qwen3-8B",
         max_model_len=8192,
+        reasoning_parser="qwen3",
     ),
     "Qwen3-4B": ModelConfig(
         name="Qwen3-4B",
         model_path="Qwen/Qwen3-4B",
         max_model_len=8192,
+        reasoning_parser="qwen3",
     ),
     "Qwen3-1.7B": ModelConfig(
         name="Qwen3-1.7B",
         model_path="Qwen/Qwen3-1.7B",
         max_model_len=8192,
+        reasoning_parser="qwen3",
     ),
     "Qwen3-14B": ModelConfig(
         name="Qwen3-14B",
         model_path="Qwen/Qwen3-14B",
         max_model_len=8192,
+        reasoning_parser="qwen3",
+        tensor_parallel_size=2,
     ),
     "Qwen3-32B": ModelConfig(
         name="Qwen3-32B",
         model_path="Qwen/Qwen3-32B",
         max_model_len=8192,
+        reasoning_parser="qwen3",
+        tensor_parallel_size=8,
     ),
     "DeepSeek-R1-Distill-Qwen-7B": ModelConfig(
         name="DeepSeek-R1-Distill-Qwen-7B",
@@ -120,6 +128,10 @@ class VLLMEngine(InferenceEngine):
         if self.config.cuda_visible_devices:
             os.environ["CUDA_VISIBLE_DEVICES"] = self.config.cuda_visible_devices
         
+        # Set VLLM_USE_MODELSCOPE=False for Qwen models (matching legacy experiment)
+        # This ensures models are loaded from HuggingFace instead of ModelScope
+        os.environ["VLLM_USE_MODELSCOPE"] = "False"
+        
         try:
             from vllm import LLM, SamplingParams
             self._vllm_native = True
@@ -129,13 +141,22 @@ class VLLMEngine(InferenceEngine):
             print(f"  GPU memory utilization: {self.config.gpu_memory_utilization}")
             print(f"  Tensor parallel size: {self.config.tensor_parallel_size}")
             print(f"  Max model len: {self.config.max_model_len}")
+            if self.config.reasoning_parser:
+                print(f"  Reasoning parser: {self.config.reasoning_parser}")
             
-            self._engine = LLM(
-                model=self.config.model_path,
-                gpu_memory_utilization=self.config.gpu_memory_utilization,
-                tensor_parallel_size=self.config.tensor_parallel_size,
-                max_model_len=self.config.max_model_len,
-            )
+            # Build LLM initialization kwargs
+            llm_kwargs = {
+                "model": self.config.model_path,
+                "gpu_memory_utilization": self.config.gpu_memory_utilization,
+                "tensor_parallel_size": self.config.tensor_parallel_size,
+                "max_model_len": self.config.max_model_len,
+            }
+            
+            # Add reasoning parser if specified
+            if self.config.reasoning_parser:
+                llm_kwargs["reasoning_parser"] = self.config.reasoning_parser
+            
+            self._engine = LLM(**llm_kwargs)
             print(f"Engine initialized successfully!")
             
         except ImportError:
@@ -203,7 +224,33 @@ class VLLMEngine(InferenceEngine):
         
         outputs = self._engine.generate([formatted_prompt], sampling_params)
         if outputs and outputs[0].outputs:
-            return outputs[0].outputs[0].text
+            output_obj = outputs[0].outputs[0]
+            text = output_obj.text or ""
+            
+            # When reasoning_parser is enabled, vLLM may return reasoning separately
+            # We want to capture ALL output including <think> tags in raw_output
+            # Check for reasoning content in various possible attributes and combine with text
+            reasoning_parts = []
+            
+            if self.config.reasoning_parser:
+                # Check common reasoning attribute names
+                for attr in ['reasoning_content', 'reasoning', 'thinking', 'reasoning_output', 'chain_of_thought']:
+                    if hasattr(output_obj, attr):
+                        reasoning = getattr(output_obj, attr)
+                        if reasoning and str(reasoning).strip():
+                            reasoning_parts.append(str(reasoning))
+            
+            # Combine all parts: reasoning first, then final text
+            # This preserves the full output with all tags intact
+            if reasoning_parts:
+                combined = "\n\n".join(reasoning_parts)
+                if text.strip():
+                    return f"{combined}\n\n{text}"
+                return combined
+            
+            # If no separate reasoning found, return text as-is
+            # (may already contain reasoning tags if vLLM combines them)
+            return text
         return None
     
     def _format_chat(self, messages: List[Dict[str, str]]) -> str:

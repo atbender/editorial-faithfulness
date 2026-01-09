@@ -4,8 +4,11 @@ set -e
 
 # Default configuration
 PARADIGM="ethical_information_access authority_bias reframing_bias"
+
+MODEL="Qwen3-4B Qwen3-8B Qwen3-14B Qwen3-32B DeepSeek-R1-Distill-Qwen-7B LLaMA-3.1-8B-Instruct"
+
+
 QUESTIONS_FILE="data/mcqa-entries.json"
-MODEL="Qwen3-1.7B Qwen3-4B Qwen3-8B"
 ENGINE="vllm"
 API_URL="http://localhost:8000/v1/chat/completions"
 K_RUNS="10"

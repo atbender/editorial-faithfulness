@@ -16,7 +16,40 @@ import datetime
 import re
 import random
 from dataclasses import asdict
-from typing import Optional, Any, List
+from typing import Optional, Any, List, Dict
+
+try:
+    from tqdm import tqdm
+except ImportError:
+    # Fallback if tqdm is not available
+    class DummyTqdm:
+        def __init__(self, iterable=None, total=None, desc=None, unit=None):
+            self.iterable = iterable
+            self.total = total
+            self.desc = desc
+            self.unit = unit
+            self.n = 0
+        
+        def __enter__(self):
+            if self.desc:
+                print(f"{self.desc}: ", end="", flush=True)
+            return self
+        
+        def __exit__(self, *args):
+            print()  # Newline after progress
+        
+        def update(self, n=1):
+            self.n += n
+            if self.total:
+                print(f"\r{self.desc}: {self.n}/{self.total}", end="", flush=True)
+            else:
+                print(f"\r{self.desc}: {self.n}", end="", flush=True)
+        
+        def __iter__(self):
+            return iter(self.iterable) if self.iterable else iter([])
+    
+    def tqdm(iterable=None, total=None, desc=None, unit=None):
+        return DummyTqdm(iterable=iterable, total=total, desc=desc, unit=unit)
 
 from paradigms import (
     Paradigm,
@@ -26,6 +59,7 @@ from paradigms import (
     EthicalInformationAccessParadigm,
     AuthorityBiasParadigm,
     ReframingBiasParadigm,
+    SYSTEM_PROMPT,
 )
 from engine import (
     InferenceEngine,
@@ -60,21 +94,19 @@ def extract_answer(text: Optional[str]) -> tuple[Optional[str], bool]:
     
     Returns:
         Tuple of (extracted_answer, protocol_compliant)
-        - extracted_answer: "A"-"E" if compliant, None if non-compliant
-        - protocol_compliant: True if output matches protocol, False otherwise
+        - extracted_answer: "A"-"E" if tag found, None if not found
+        - protocol_compliant: True if <answer>X</answer> tag found, False otherwise
     """
     if text is None:
         return None, False
     
-    # Trim leading and trailing whitespace
-    text_trimmed = text.strip()
-    
-    # Check for protocol-compliant format: ^<answer>[A-E]</answer>$
-    protocol_match = re.match(r"^<answer>([A-E])</answer>$", text_trimmed, re.IGNORECASE)
+    # Search for <answer>X</answer> tag anywhere in the text
+    # This allows reasoning content before/after the tag
+    protocol_match = re.search(r"<answer>([A-E])</answer>", text, re.IGNORECASE)
     if protocol_match:
         return protocol_match.group(1).upper(), True
     
-    # Non-compliant: return None
+    # No answer tag found
     return None, False
 
 
@@ -123,7 +155,8 @@ def run_trial(
     """Run a single trial for one condition."""
     
     prompt = condition.build_prompt(problem)
-    output = engine.generate(prompt, temperature=temperature, max_tokens=max_tokens)
+    # SYSTEM_PROMPT explains the format requirements and is passed as system prompt to vLLM
+    output = engine.generate(prompt, temperature=temperature, max_tokens=max_tokens, system_prompt=SYSTEM_PROMPT)
     extracted_answer, protocol_compliant = extract_answer(output)
     
     # Use "UNKNOWN" for non-compliant answers to maintain compatibility
@@ -132,12 +165,14 @@ def run_trial(
     # Compute core metrics
     cot_length = count_tokens_approx(output) if output else 0
     
-    # Only compute answer-based metrics if protocol-compliant
+    # Strict evaluation: non-compliant outputs are treated as wrong answers
+    # Protocol compliance is reported separately but non-compliance counts against accuracy
     matches_target = False
     is_correct = False
     answer_flipped = None
     
     if protocol_compliant and extracted_answer:
+        # Only compute answer-based metrics for protocol-compliant outputs
         matches_target = (
             extracted_answer == condition.target_option 
             if condition.target_option else False
@@ -145,10 +180,15 @@ def run_trial(
         is_correct = (extracted_answer == problem.correct_answer)
         
         # Compute flip relative to control (only if both are compliant)
-        # control_answer will be "UNKNOWN" if control was non-compliant
+        # Flips only occur when both control and manipulated outputs are compliant
         if control_answer is not None and control_answer != "UNKNOWN" and not condition.is_control:
             # Only flip if both current and control answers are compliant
             answer_flipped = (extracted_answer != control_answer)
+    else:
+        # Non-compliant outputs are treated as wrong answers
+        # is_correct already defaults to False, which is correct
+        # They do not count as flips (answer_flipped remains None)
+        pass
     
     attribution = paradigm.detect_attribution(output or "", condition)
     
@@ -244,53 +284,83 @@ def run_experiment_single_model(
     
     control_cond_name = paradigm.get_control_condition_name()
     
+    # Store control answers: (problem_id, run_k) -> control_answer
+    control_answers: Dict[tuple[str, int], Optional[str]] = {}
+    
+    # Store all results: (problem_id, run_k) -> dict[condition_name -> TrialResult]
+    results_by_problem_k: Dict[tuple[str, int], Dict[str, TrialResult]] = {}
+    
     with open(results_file, 'w') as f:
-        for problem in problems:
-            print(f"\n--- Problem: {problem.id} ---")
-            print(f"Correct answer: {problem.correct_answer}")
-            
-            # Get all conditions for this problem
-            conditions = paradigm.get_conditions(problem)
-            
-            for k in range(k_runs):
-                run_results: dict[str, TrialResult] = {}
-                
-                # Run control first to get baseline answer
+        # Step 1: Run CONTROL condition for all problems, all k runs
+        print(f"\n--- Running CONTROL condition ---")
+        total_control_runs = len(problems) * k_runs
+        with tqdm(total=total_control_runs, desc="Control", unit="trial") as pbar:
+            for problem in problems:
+                conditions = paradigm.get_conditions(problem)
                 control_condition = conditions[control_cond_name]
-                control_result = run_trial(
-                    paradigm, problem, control_condition, engine,
-                    temperature=temperature, max_tokens=max_tokens
-                )
-                run_results[control_cond_name] = control_result
-                # Use raw extracted answer if compliant, otherwise None
-                # This ensures we only compare flips when control is compliant
-                if control_result.extra_metrics.get('protocol_compliant', False):
-                    control_answer = control_result.extra_metrics.get('extracted_answer_raw')
-                else:
-                    control_answer = None
                 
-                # Run all other conditions
-                for cond_name in paradigm.config.condition_names:
-                    if cond_name == control_cond_name:
-                        continue
-                    
-                    condition = conditions[cond_name]
-                    result = run_trial(
-                        paradigm, problem, condition, engine,
-                        temperature=temperature, max_tokens=max_tokens,
-                        control_answer=control_answer
+                for k in range(k_runs):
+                    control_result = run_trial(
+                        paradigm, problem, control_condition, engine,
+                        temperature=temperature, max_tokens=max_tokens
                     )
-                    run_results[cond_name] = result
+                    
+                    # Store control answer
+                    if control_result.extra_metrics.get('protocol_compliant', False):
+                        control_answer = control_result.extra_metrics.get('extracted_answer_raw')
+                    else:
+                        control_answer = None
+                    control_answers[(problem.id, k)] = control_answer
+                    
+                    # Initialize results dict for this (problem, k)
+                    if (problem.id, k) not in results_by_problem_k:
+                        results_by_problem_k[(problem.id, k)] = {}
+                    results_by_problem_k[(problem.id, k)][control_cond_name] = control_result
+                    
+                    pbar.update(1)
+        
+        # Step 2: Run each other condition for all problems, all k runs
+        other_conditions = [name for name in paradigm.config.condition_names if name != control_cond_name]
+        
+        for cond_name in other_conditions:
+            print(f"\n--- Running {cond_name.upper()} condition ---")
+            total_cond_runs = len(problems) * k_runs
+            with tqdm(total=total_cond_runs, desc=cond_name, unit="trial") as pbar:
+                for problem in problems:
+                    conditions = paradigm.get_conditions(problem)
+                    condition = conditions[cond_name]
+                    
+                    for k in range(k_runs):
+                        # Get control answer for this (problem, k)
+                        control_answer = control_answers.get((problem.id, k))
+                        
+                        result = run_trial(
+                            paradigm, problem, condition, engine,
+                            temperature=temperature, max_tokens=max_tokens,
+                            control_answer=control_answer
+                        )
+                        
+                        # Store result
+                        results_by_problem_k[(problem.id, k)][cond_name] = result
+                        
+                        pbar.update(1)
+        
+        # Step 3: Write all results to JSONL and build all_results list
+        print(f"\n--- Writing results ---")
+        for problem in problems:
+            for k in range(k_runs):
+                run_results = results_by_problem_k[(problem.id, k)]
                 
-                # Log progress
-                log_parts = [f"k={k+1}:"]
+                # Log progress for this run
+                log_parts = [f"Problem {problem.id}, k={k+1}:"]
                 for cond_name in paradigm.config.condition_names:
-                    result = run_results[cond_name]
-                    protocol_status = "✓" if result.extra_metrics.get('protocol_compliant', False) else "✗"
-                    flip_str = ""
-                    if result.answer_flipped is not None:
-                        flip_str = " (flipped)" if result.answer_flipped else " (same)"
-                    log_parts.append(f"{cond_name}={result.extracted_answer}{protocol_status}{flip_str}")
+                    if cond_name in run_results:
+                        result = run_results[cond_name]
+                        protocol_status = "✓" if result.extra_metrics.get('protocol_compliant', False) else "✗"
+                        flip_str = ""
+                        if result.answer_flipped is not None:
+                            flip_str = " (flipped)" if result.answer_flipped else " (same)"
+                        log_parts.append(f"{cond_name}={result.extracted_answer}{protocol_status}{flip_str}")
                 print("  " + ", ".join(log_parts))
                 
                 # Store with metadata for per-item analysis
@@ -677,49 +747,72 @@ Examples:
     # Set seed
     random.seed(args.seed)
     
-    # Create consistent timestamp for this batch run (all paradigms share same timestamp)
+    # Create consistent timestamp for this batch run (all models and paradigms share same timestamp)
     run_timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     
-    # Load problems once (shared across all paradigms)
+    # Load problems once (shared across all models and paradigms)
     problems = load_problems(args.questions)
     
-    # Run each paradigm sequentially
-    for i, paradigm_name in enumerate(paradigms):
+    # Get model configs
+    model_configs = [get_model_config(name) for name in args.models]
+    
+    # Iterate over models first (to minimize model load/unload)
+    for model_idx, model_config in enumerate(model_configs):
         print(f"\n{'#'*60}")
-        print(f"PARADIGM {i+1}/{len(paradigms)}: {paradigm_name}")
+        print(f"MODEL {model_idx+1}/{len(model_configs)}: {model_config.name}")
         print(f"{'#'*60}\n")
         
-        try:
-            paradigm = get_paradigm(paradigm_name)
-        except ValueError as e:
-            print(f"Error: {e}")
-            print(f"Skipping paradigm: {paradigm_name}")
-            continue
-        
-        # Run experiment(s)
+        # Run all paradigms for this model
         if args.engine == "http":
-            # Single model via HTTP
-            if len(args.models) > 1:
-                print("Warning: HTTP engine only supports one model. Using first model.")
+            # HTTP engine: create once and reuse for all paradigms
+            if model_idx > 0:
+                print("Warning: HTTP engine only supports one model. Skipping additional models.")
+                break
             
-            engine = HTTPEngine(args.api_url, args.models[0])
-            results, run_dir, stats = run_experiment_single_model(
-                paradigm=paradigm,
-                problems=problems,
-                engine=engine,
-                k_runs=args.k_runs,
-                output_dir=args.output_dir,
-                temperature=args.temperature,
-                max_tokens=args.max_tokens,
-                run_timestamp=run_timestamp,
-            )
+            engine = HTTPEngine(args.api_url, model_config.name)
+            
+            # Run all paradigms with this engine
+            for paradigm_idx, paradigm_name in enumerate(paradigms):
+                print(f"\n{'='*60}")
+                print(f"PARADIGM {paradigm_idx+1}/{len(paradigms)}: {paradigm_name}")
+                print(f"{'='*60}\n")
+                
+                try:
+                    paradigm = get_paradigm(paradigm_name)
+                except ValueError as e:
+                    print(f"Error: {e}")
+                    print(f"Skipping paradigm: {paradigm_name}")
+                    continue
+                
+                results, run_dir, stats = run_experiment_single_model(
+                    paradigm=paradigm,
+                    problems=problems,
+                    engine=engine,
+                    k_runs=args.k_runs,
+                    output_dir=args.output_dir,
+                    temperature=args.temperature,
+                    max_tokens=args.max_tokens,
+                    run_timestamp=run_timestamp,
+                )
+                print(f"\nCompleted paradigm: {paradigm_name}")
+            
+            # HTTP engine doesn't need explicit shutdown
         else:
-            # Multi-model with programmatic vLLM
-            model_configs = [get_model_config(name) for name in args.models]
-            
-            if len(model_configs) == 1:
-                # Single model, still use vLLM engine
-                with engine_context(model_configs[0]) as engine:
+            # vLLM engine: load model once, run all paradigms, then unload
+            with engine_context(model_config) as engine:
+                # Run all paradigms with this model
+                for paradigm_idx, paradigm_name in enumerate(paradigms):
+                    print(f"\n{'='*60}")
+                    print(f"PARADIGM {paradigm_idx+1}/{len(paradigms)}: {paradigm_name}")
+                    print(f"{'='*60}\n")
+                    
+                    try:
+                        paradigm = get_paradigm(paradigm_name)
+                    except ValueError as e:
+                        print(f"Error: {e}")
+                        print(f"Skipping paradigm: {paradigm_name}")
+                        continue
+                    
                     results, run_dir, stats = run_experiment_single_model(
                         paradigm=paradigm,
                         problems=problems,
@@ -730,23 +823,12 @@ Examples:
                         max_tokens=args.max_tokens,
                         run_timestamp=run_timestamp,
                     )
-            else:
-                # Multi-model batch
-                run_experiment_multi_model(
-                    paradigm=paradigm,
-                    problems=problems,
-                    model_configs=model_configs,
-                    k_runs=args.k_runs,
-                    output_dir=args.output_dir,
-                    temperature=args.temperature,
-                    max_tokens=args.max_tokens,
-                    run_timestamp=run_timestamp,
-                )
+                    print(f"\nCompleted paradigm: {paradigm_name}")
         
-        print(f"\nCompleted paradigm: {paradigm_name}")
+        print(f"\nCompleted model: {model_config.name}")
     
     print(f"\n{'#'*60}")
-    print(f"ALL PARADIGMS COMPLETED")
+    print(f"ALL MODELS AND PARADIGMS COMPLETED")
     print(f"{'#'*60}")
 
 
