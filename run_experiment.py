@@ -3,7 +3,7 @@ Experiment runner for editorial faithfulness paradigms.
 
 Usage:
     # Single model (uses HTTP server)
-    python run_experiment.py --paradigm ethical_information_access --questions questions.json
+    python run_experiment.py --paradigm ethical_information_access --questions data/mcqa-entries.json
     
     # Multi-model with programmatic vLLM (spins up/down engines automatically)
     python run_experiment.py --paradigm ethical_information_access --models Qwen3-4B Qwen3-8B --engine vllm
@@ -41,7 +41,8 @@ from engine import (
 # ============================================================================
 
 DEFAULT_API_URL = "http://localhost:8000/v1/chat/completions"
-DEFAULT_MODEL = "Qwen3-4B"
+DEFAULT_MODELS = ["Qwen3-1.7B", "Qwen3-4B", "Qwen3-8B"]  # Default multi-model set
+DEFAULT_ENGINE = "vllm"  # Default to vLLM for multi-model support
 K_RUNS = 5  # Number of runs per condition per problem
 
 
@@ -251,7 +252,13 @@ def run_experiment_single_model(
                     log_parts.append(f"{cond_name}={result.extracted_answer}{flip_str}")
                 print("  " + ", ".join(log_parts))
                 
-                all_results.append(run_results)
+                # Store with metadata for per-item analysis
+                enriched_run_results = {
+                    "problem_id": problem.id,
+                    "run_k": k,
+                    "results": run_results
+                }
+                all_results.append(enriched_run_results)
                 
                 # Write trial to JSONL
                 trial_entry = {
@@ -468,7 +475,6 @@ def _generate_batch_summary(
 
 PARADIGM_REGISTRY = {
     "ethical_information_access": EthicalInformationAccessParadigm,
-    "ethical_information_access_misleading": lambda: EthicalInformationAccessParadigm(use_wrong_answer=True),
 }
 
 
@@ -503,11 +509,14 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Single model via HTTP server (default)
-  python run_experiment.py -p ethical_information_access -q questions.json
+  # Multi-model with vLLM (default - spins up server for each model)
+  python run_experiment.py -p ethical_information_access -q data/mcqa-entries.json
 
-  # Multi-model with programmatic vLLM
-  python run_experiment.py -p ethical_information_access --models Qwen3-4B Qwen3-8B --engine vllm
+  # Single model via HTTP server
+  python run_experiment.py -p ethical_information_access --engine http --models Qwen3-4B
+
+  # Custom model set
+  python run_experiment.py -p ethical_information_access --models Qwen3-4B Qwen3-8B
 
   # List available paradigms and models
   python run_experiment.py --list
@@ -528,22 +537,22 @@ Examples:
     parser.add_argument(
         "--questions", "-q",
         type=str,
-        default="questions.json",
+        default="data/mcqa-entries.json",
         help="Questions file to use"
     )
     parser.add_argument(
         "--models", "-m",
         type=str,
         nargs="+",
-        default=[DEFAULT_MODEL],
-        help="Model name(s) to evaluate"
+        default=DEFAULT_MODELS,
+        help="Model name(s) to evaluate (default: Qwen3-1.7B Qwen3-4B Qwen3-8B)"
     )
     parser.add_argument(
         "--engine",
         type=str,
         choices=["http", "vllm"],
-        default="http",
-        help="Engine type: 'http' for external server, 'vllm' for programmatic"
+        default=DEFAULT_ENGINE,
+        help="Engine type: 'http' for external server, 'vllm' for programmatic (default: vllm)"
     )
     parser.add_argument(
         "--api-url",

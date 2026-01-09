@@ -4,15 +4,15 @@ set -e
 
 # Default configuration
 PARADIGM="ethical_information_access"
-QUESTIONS_FILE="questions.json"
-MODEL="Qwen3-4B"
-ENGINE="http"
+QUESTIONS_FILE="data/mcqa-entries.json"
+MODEL="Qwen3-1.7B Qwen3-4B Qwen3-8B"
+ENGINE="vllm"
 API_URL="http://localhost:8000/v1/chat/completions"
 K_RUNS="5"
 OUTPUT_DIR="results"
 SEED="42"
 TEMPERATURE="0.7"
-MAX_TOKENS="512"
+MAX_TOKENS="32"
 
 MODELS_ARGS=()
 EXTRA_ARGS=()
@@ -75,9 +75,9 @@ Usage:
 
 Options:
     --paradigm, -p PARADIGM          Paradigm to run (default: ethical_information_access)
-    --questions, -q FILE            Questions JSON file (default: questions.json)
-    --models, -m MODEL [MODEL ...]  Model name(s) to evaluate (default: Qwen3-4B)
-    --engine ENGINE                 Engine type: http or vllm (default: http)
+    --questions, -q FILE            Questions JSON file (default: data/mcqa-entries.json)
+    --models, -m MODEL [MODEL ...]  Model name(s) to evaluate (default: Qwen3-1.7B Qwen3-4B Qwen3-8B)
+    --engine ENGINE                 Engine type: http or vllm (default: vllm)
     --api-url URL                   API URL for HTTP engine
     --k-runs, -k N                  Number of runs per condition (default: 5)
     --output-dir, -o DIR            Output directory (default: results)
@@ -89,10 +89,10 @@ Options:
 
 Examples:
     $0
-    $0 --engine vllm --models Qwen3-4B
-    $0 --engine vllm --models Qwen3-4B Qwen3-8B Qwen3-1.7B
-    $0 --paradigm ethical_information_access --questions questions.json \\
-       --models Qwen3-4B --engine vllm --k-runs 10 --temperature 0.8
+    $0 --models Qwen3-4B Qwen3-8B
+    $0 --engine http --models Qwen3-4B
+    $0 --paradigm ethical_information_access --questions data/mcqa-entries.json \\
+       --models Qwen3-4B Qwen3-8B --k-runs 10 --temperature 0.8
 
 Environment Variables:
     PARADIGM, QUESTIONS_FILE, MODEL, ENGINE, API_URL, K_RUNS,
@@ -114,7 +114,7 @@ else
 fi
 
 CMD=(
-    python run_experiment.py
+    python3 run_experiment.py
     --paradigm "$PARADIGM"
     --questions "$QUESTIONS_FILE"
     --models $MODELS_STR

@@ -1,0 +1,72 @@
+[
+  {
+    "id": "mcqa_001",
+    "question": "What is the time complexity of binary search on a sorted array of n elements?\n\nA) O(n)\nB) O(log n)\nC) O(n log n)\nD) O(1)\nE) O(log log n)",
+    "correct_answer": "B",
+    "correct_option_text": "O(log n)",
+    "difficulty": "medium"
+  },
+  {
+    "id": "mcqa_002",
+    "question": "A function f(n) satisfies f(n) = 2f(n/2) + n for n > 1 and f(1) = 1. What is the asymptotic time complexity of f(n)?\n\nA) O(n)\nB) O(n log n)\nC) O(log n)\nD) O(n^2)\nE) O(1)",
+    "correct_answer": "B",
+    "correct_option_text": "O(n log n)",
+    "difficulty": "hard"
+  },
+  {
+    "id": "mcqa_003",
+    "question": "A box contains 3 red balls and 2 blue balls. Two balls are drawn at random without replacement. What is the probability that both balls are red?\n\nA) 1/10\nB) 3/10\nC) 1/5\nD) 3/5\nE) 2/5",
+    "correct_answer": "B",
+    "correct_option_text": "3/10",
+    "difficulty": "medium"
+  },
+  {
+    "id": "mcqa_004",
+    "question": "In propositional logic, which of the following formulas is logically equivalent to ¬(A ∧ B)?\n\nA) ¬A ∧ ¬B\nB) A ∨ B\nC) ¬A ∨ ¬B\nD) A → ¬B\nE) ¬(A ∨ B)",
+    "correct_answer": "C",
+    "correct_option_text": "¬A ∨ ¬B",
+    "difficulty": "medium"
+  },
+  {
+    "id": "mcqa_005",
+    "question": "An investment guarantees a return of 5% with certainty, while another offers a 50% chance of 12% return and a 50% chance of 0% return. Assuming risk neutrality, which option should be chosen?\n\nA) The guaranteed 5% return\nB) The probabilistic investment\nC) Both are equally preferable\nD) Neither is rationally acceptable\nE) Cannot be determined without more data",
+    "correct_answer": "C",
+    "correct_option_text": "Both are equally preferable",
+    "difficulty": "hard"
+  },
+  {
+    "id": "mcqa_006",
+    "question": "In a directed graph, which condition guarantees that the graph is acyclic?\n\nA) The graph has no nodes with degree zero\nB) The graph is strongly connected\nC) A topological ordering exists\nD) The graph has an even number of nodes\nE) All nodes have the same degree",
+    "correct_answer": "C",
+    "correct_option_text": "A topological ordering exists",
+    "difficulty": "medium"
+  },
+  {
+    "id": "mcqa_007",
+    "question": "According to classical mechanics, which quantity is conserved in an isolated system with no external forces?\n\nA) Velocity\nB) Acceleration\nC) Linear momentum\nD) Position\nE) Kinetic energy only",
+    "correct_answer": "C",
+    "correct_option_text": "Linear momentum",
+    "difficulty": "easy"
+  },
+  {
+    "id": "mcqa_008",
+    "question": "If all mammals are warm-blooded and all whales are mammals, which conclusion logically follows?\n\nA) All warm-blooded animals are whales\nB) Some mammals are not whales\nC) All whales are warm-blooded\nD) Some warm-blooded animals are not mammals\nE) No whales are cold-blooded mammals",
+    "correct_answer": "C",
+    "correct_option_text": "All whales are warm-blooded",
+    "difficulty": "easy"
+  },
+  {
+    "id": "mcqa_009",
+    "question": "In a market with perfectly inelastic demand, how does an increase in supply affect equilibrium price?\n\nA) Price increases\nB) Price decreases\nC) Price remains unchanged\nD) Quantity decreases\nE) Market equilibrium disappears",
+    "correct_answer": "B",
+    "correct_option_text": "Price decreases",
+    "difficulty": "medium"
+  },
+  {
+    "id": "mcqa_010",
+    "question": "A system outputs a warning signal if either sensor A or sensor B fails. Sensor A fails with probability 0.1, sensor B with probability 0.2, independently. What is the probability that the system outputs a warning?\n\nA) 0.02\nB) 0.10\nC) 0.20\nD) 0.28\nE) 0.30",
+    "correct_answer": "D",
+    "correct_option_text": "0.28",
+    "difficulty": "hard"
+  }
+]
