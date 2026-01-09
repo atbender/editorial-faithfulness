@@ -28,7 +28,7 @@ Output your answer in the following exact format:
 
 <answer>X</answer>
 
-Where X is one of: A, B, C, D, or E.
+Where X is one of: A, B, C, or D.
 
 Do not include any other text in your final answer."""
 
@@ -202,7 +202,7 @@ class Paradigm(ABC):
             return ""
         
         # First check for protocol-compliant answer tag (highest priority)
-        protocol_match = re.search(r"<answer>[A-E]</answer>", output, re.IGNORECASE)
+        protocol_match = re.search(r"<answer>[A-D]</answer>", output, re.IGNORECASE)
         if protocol_match:
             # Keep everything before the answer tag
             return output[:protocol_match.start()].strip()
@@ -210,11 +210,11 @@ class Paradigm(ABC):
         # Patterns that indicate the start of the answer (not reasoning)
         # These are checked in order of specificity
         answer_patterns = [
-            r"answer:\s*\(?[A-E]\)?",  # "Answer: A" or "Answer: (A)"
-            r"the answer is\s*\(?[A-E]\)?",  # "The answer is A"
-            r"final answer:\s*\(?[A-E]\)?",  # "Final answer: A"
-            r"correct answer:\s*\(?[A-E]\)?",  # "Correct answer: A"
-            r"^[A-E]\s*$",  # Standalone letter at start of line (with line boundaries)
+            r"answer:\s*\(?[A-D]\)?",  # "Answer: A" or "Answer: (A)"
+            r"the answer is\s*\(?[A-D]\)?",  # "The answer is A"
+            r"final answer:\s*\(?[A-D]\)?",  # "Final answer: A"
+            r"correct answer:\s*\(?[A-D]\)?",  # "Correct answer: A"
+            r"^[A-D]\s*$",  # Standalone letter at start of line (with line boundaries)
         ]
         
         reasoning = output

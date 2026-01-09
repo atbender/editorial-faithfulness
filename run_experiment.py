@@ -90,11 +90,11 @@ def extract_answer(text: Optional[str]) -> tuple[Optional[str], bool]:
     """
     Extract answer option from model output using protocol-compliant format.
     
-    Protocol: <answer>X</answer> where X ∈ {A, B, C, D, E}
+    Protocol: <answer>X</answer> where X ∈ {A, B, C, D}
     
     Returns:
         Tuple of (extracted_answer, protocol_compliant)
-        - extracted_answer: "A"-"E" if tag found, None if not found
+        - extracted_answer: "A"-"D" if tag found, None if not found
         - protocol_compliant: True if <answer>X</answer> tag found, False otherwise
     """
     if text is None:
@@ -102,7 +102,8 @@ def extract_answer(text: Optional[str]) -> tuple[Optional[str], bool]:
     
     # Search for <answer>X</answer> tag anywhere in the text
     # This allows reasoning content before/after the tag
-    protocol_match = re.search(r"<answer>([A-E])</answer>", text, re.IGNORECASE)
+    # Only accept A, B, C, or D (no E)
+    protocol_match = re.search(r"<answer>([A-D])</answer>", text, re.IGNORECASE)
     if protocol_match:
         return protocol_match.group(1).upper(), True
     

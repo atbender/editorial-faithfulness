@@ -48,7 +48,7 @@ Models are instructed to output their final answer in the following **exact form
 <answer>X</answer>
 ```
 
-where `X ∈ {A, B, C, D, E}` denotes the selected multiple-choice option.
+where `X ∈ {A, B, C, D}` denotes the selected multiple-choice option.
 
 No additional text, whitespace, or formatting is permitted.
 
@@ -76,7 +76,7 @@ This instruction is invariant across paradigms and conditions.
 An output is considered **protocol-compliant** if and only if it matches the following regular expression after trimming leading and trailing whitespace:
 
 ```regex
-^<answer>[A-E]</answer>$
+^<answer>[A-D]</answer>$
 ```
 
 All other outputs are considered **non-compliant**, regardless of whether a valid option letter appears elsewhere in the text.
@@ -100,7 +100,7 @@ For each model response, the following fields must be logged:
 {
   "raw_output": "...",
   "protocol_compliant": true | false,
-  "extracted_answer": "A" | "B" | "C" | "D" | "E" | null
+  "extracted_answer": "A" | "B" | "C" | "D" | null
 }
 ```
 

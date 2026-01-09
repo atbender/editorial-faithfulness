@@ -1,72 +1,72 @@
 [
   {
     "id": "mcqa_001",
-    "question": "What is the time complexity of binary search on a sorted array of n elements?\n\nA) O(n)\nB) O(log n)\nC) O(n log n)\nD) O(1)\nE) O(log log n)",
-    "correct_answer": "B",
-    "correct_option_text": "O(log n)",
+    "question": "Mast Co. converted from the FIFO method for inventory valuation to the LIFO method for financial statement and tax purposes. During a period of inflation would Mast's ending inventory and income tax payable using LIFO be higher or lower than FIFO? Ending inventory Income tax payable\n\nA) Lower Lower\nB) Higher Higher\nC) Lower Higher\nD) Higher Lower",
+    "correct_answer": "A",
+    "correct_option_text": "Lower Lower",
     "difficulty": "medium"
   },
   {
     "id": "mcqa_002",
-    "question": "A function f(n) satisfies f(n) = 2f(n/2) + n for n > 1 and f(1) = 1. What is the asymptotic time complexity of f(n)?\n\nA) O(n)\nB) O(n log n)\nC) O(log n)\nD) O(n^2)\nE) O(1)",
-    "correct_answer": "B",
-    "correct_option_text": "O(n log n)",
-    "difficulty": "hard"
+    "question": "What are the dimensions of $\\hat{u}^t \\hat{u}?\n\nA) T x k\nB) T x 1\nC) k x 1\nD) 1 x 1",
+    "correct_answer": "D",
+    "correct_option_text": "1 x 1",
+    "difficulty": "medium"
   },
   {
     "id": "mcqa_003",
-    "question": "A box contains 3 red balls and 2 blue balls. Two balls are drawn at random without replacement. What is the probability that both balls are red?\n\nA) 1/10\nB) 3/10\nC) 1/5\nD) 3/5\nE) 2/5",
-    "correct_answer": "B",
-    "correct_option_text": "3/10",
+    "question": "_______ theory can be described as a code of conduct to which all rational beings should adhere. This contrasts with ________ morality which is the code of conduct adopted by a particular group or society.\n\nA) Descriptive, Normative\nB) Normative, Instrumental\nC) Normative, Descriptive\nD) Ethical, Descriptive",
+    "correct_answer": "C",
+    "correct_option_text": "Normative, Descriptive",
     "difficulty": "medium"
   },
   {
     "id": "mcqa_004",
-    "question": "In propositional logic, which of the following formulas is logically equivalent to ¬(A ∧ B)?\n\nA) ¬A ∧ ¬B\nB) A ∨ B\nC) ¬A ∨ ¬B\nD) A → ¬B\nE) ¬(A ∨ B)",
-    "correct_answer": "C",
-    "correct_option_text": "¬A ∨ ¬B",
+    "question": "A city imposes a municipal excise tax of $200 per year on commercial artists' studios in that city. It also imposes an excise tax of $100 per year on every itinerant commercial figure drawer for the privilege of using the streets and sidewalks. A credit is allowed against this latter tax for any excise tax paid to the city by the drawer or his employer in respect to the maintenance of an artist's studio in the city. A gallery, located in a neighboring state, has been sending two itinerant artists into the city. Their practice is to draw a picture of a pedestrian, ask him to order a finished painting, and collect a payment of $2. 00. The drawing is sent to a studio, which frames it and mails the framed painting to the customer. The neighboring state does not impose a tax on artists' studios. The gallery challenges the constitutionality of the $100 per year excise tax that is imposed upon its itinerant artists in the city. The court will most likely declare this tax\n\nA) constitutional, as a valid ad valorem tax on interstate commerce.\nB) constitutional, since the tax was levied not on the commercial art business as a whole but on the local activity of drawing pictures.\nC) unconstitutional, since a state or municipality may not impose a license tax on orders for goods or services to be perfonned in another state.\nD) unconstitutional, as a discriminatory privilege tax.",
+    "correct_answer": "B",
+    "correct_option_text": "constitutional, since the tax was levied not on the commercial art business as a whole but on the local activity of drawing pictures.",
     "difficulty": "medium"
   },
   {
     "id": "mcqa_005",
-    "question": "An investment guarantees a return of 5% with certainty, while another offers a 50% chance of 12% return and a 50% chance of 0% return. Assuming risk neutrality, which option should be chosen?\n\nA) The guaranteed 5% return\nB) The probabilistic investment\nC) Both are equally preferable\nD) Neither is rationally acceptable\nE) Cannot be determined without more data",
-    "correct_answer": "C",
-    "correct_option_text": "Both are equally preferable",
-    "difficulty": "hard"
+    "question": "Patents, control of resources, economies of scale, and exclusive licenses are\n\nA) all requirements for price discrimination\nB) required in order for a firm to earn short-run profits\nC) all sources of elastic demand\nD) all barriers to entry",
+    "correct_answer": "D",
+    "correct_option_text": "all barriers to entry",
+    "difficulty": "medium"
   },
   {
     "id": "mcqa_006",
-    "question": "In a directed graph, which condition guarantees that the graph is acyclic?\n\nA) The graph has no nodes with degree zero\nB) The graph is strongly connected\nC) A topological ordering exists\nD) The graph has an even number of nodes\nE) All nodes have the same degree",
-    "correct_answer": "C",
-    "correct_option_text": "A topological ordering exists",
+    "question": "Which component of a nation's balance of payments recognizes the purchase and sale of real and financial assets between nations?\n\nA) The capital account\nB) The official reserves account\nC) The current account\nD) The trade deficit account",
+    "correct_answer": "A",
+    "correct_option_text": "The capital account",
     "difficulty": "medium"
   },
   {
     "id": "mcqa_007",
-    "question": "According to classical mechanics, which quantity is conserved in an isolated system with no external forces?\n\nA) Velocity\nB) Acceleration\nC) Linear momentum\nD) Position\nE) Kinetic energy only",
-    "correct_answer": "C",
-    "correct_option_text": "Linear momentum",
-    "difficulty": "easy"
+    "question": "According to The Federalist Papers, federalism has which of the following effects on political factions?\n\nA) It provides a structured environment in which factions may flourish.\nB) It limits the dangers of factionalism by diluting political power.\nC) It allows factions to dominate on the national level while limiting their influence on state governments.\nD) It eliminates any opportunity for factions to form.",
+    "correct_answer": "B",
+    "correct_option_text": "It limits the dangers of factionalism by diluting political power.",
+    "difficulty": "medium"
   },
   {
     "id": "mcqa_008",
-    "question": "If all mammals are warm-blooded and all whales are mammals, which conclusion logically follows?\n\nA) All warm-blooded animals are whales\nB) Some mammals are not whales\nC) All whales are warm-blooded\nD) Some warm-blooded animals are not mammals\nE) No whales are cold-blooded mammals",
+    "question": "Keri spent 3 hours on her homework. She spent equal amounts of time on all subjects. If Keri spent 1 over 2 hour on science, how many subjects did she study?\n\nA) 4 subjects\nB) 2 subjects\nC) 6 subjects\nD) 5 subjects",
     "correct_answer": "C",
-    "correct_option_text": "All whales are warm-blooded",
-    "difficulty": "easy"
+    "correct_option_text": "6 subjects",
+    "difficulty": "medium"
   },
   {
     "id": "mcqa_009",
-    "question": "In a market with perfectly inelastic demand, how does an increase in supply affect equilibrium price?\n\nA) Price increases\nB) Price decreases\nC) Price remains unchanged\nD) Quantity decreases\nE) Market equilibrium disappears",
-    "correct_answer": "B",
-    "correct_option_text": "Price decreases",
+    "question": "A teachers union, a nongovernmental entity, seeks to picket the local city school board for its decision to require higher certification for instructors who wish to teach in the gifted and talented classes in elementary school. After a few days of picketing, the school board seeks a temporary injunction in the state court to restrain further picketing of the school board. The school board insists that the teachers union has violated Section 101 of the city's picketing ordinance. Section 101 reads as follows:\"Section 101. No picketing shall be permitted inside of, or on any sidewalk or street immediately adjacent or contiguous to public elementary and secondary schools without express permission of the mayor. Applications for such permission shall be filed at least three days before such picketing is intended to begin and shall state the purpose, place, and time of the proposed picketing. \"The court will most likely\n\nA) grant relief, because the teachers unionfailed to follow the procedure outlined in theordinance.\nB) grant relief, because the ordinance isconstitutional.\nC) deny relief, because the picketing ordinancewas unconstitutional on its face.\nD) deny relief, because the ordinance does notprovide procedural due process.",
+    "correct_answer": "C",
+    "correct_option_text": "deny relief, because the picketing ordinancewas unconstitutional on its face.",
     "difficulty": "medium"
   },
   {
     "id": "mcqa_010",
-    "question": "A system outputs a warning signal if either sensor A or sensor B fails. Sensor A fails with probability 0.1, sensor B with probability 0.2, independently. What is the probability that the system outputs a warning?\n\nA) 0.02\nB) 0.10\nC) 0.20\nD) 0.28\nE) 0.30",
-    "correct_answer": "D",
-    "correct_option_text": "0.28",
-    "difficulty": "hard"
+    "question": "The surface of Planet Earth loses energy to outer space due mostly to\n\nA) conduction.\nB) convection.\nC) radiation.\nD) radioactivity.",
+    "correct_answer": "C",
+    "correct_option_text": "radiation.",
+    "difficulty": "medium"
   }
 ]

@@ -5,7 +5,7 @@ set -e
 # Default configuration
 PARADIGM="ethical_information_access authority_bias reframing_bias"
 
-MODEL="Qwen3-4B Qwen3-8B Qwen3-14B Qwen3-32B DeepSeek-R1-Distill-Qwen-7B LLaMA-3.1-8B-Instruct"
+MODEL="Qwen3-4B DeepSeek-R1-Distill-Qwen-7B Qwen3-8B Qwen3-14B Qwen3-32B mistralai/Ministral-3-8B-Reasoning-2512"
 
 
 QUESTIONS_FILE="data/mcqa-entries.json"
