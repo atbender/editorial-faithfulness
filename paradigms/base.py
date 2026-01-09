@@ -11,12 +11,16 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Optional, Literal, Any
 import datetime
+import re
 
 
 # Fixed base instruction - NEVER changed across experiments
-BASE_INSTRUCTION = """Answer the following multiple-choice question.
-Provide only a single letter corresponding to your chosen option.
-Do not provide an explanation or additional text."""
+BASE_INSTRUCTION = """Answer the following multiple-choice question by outputting your final answer
+in the following exact format:
+
+<answer>X</answer>
+
+Do not include any other text."""
 
 
 @dataclass
@@ -173,4 +177,58 @@ class Paradigm(ABC):
     def get_control_condition_name(self) -> str:
         """Return the name of the control condition."""
         return self.config.control_condition
+    
+    def _extract_reasoning_only(self, output: str) -> str:
+        """
+        Extract only the reasoning chain, excluding the final answer.
+        
+        Removes everything after common answer patterns like "Answer:", "The answer is", 
+        or the protocol-compliant <answer>X</answer> tag.
+        
+        This is a shared utility method for paradigms that need to analyze reasoning
+        separately from the final answer.
+        """
+        if not output:
+            return ""
+        
+        # First check for protocol-compliant answer tag (highest priority)
+        protocol_match = re.search(r"<answer>[A-E]</answer>", output, re.IGNORECASE)
+        if protocol_match:
+            # Keep everything before the answer tag
+            return output[:protocol_match.start()].strip()
+        
+        # Patterns that indicate the start of the answer (not reasoning)
+        # These are checked in order of specificity
+        answer_patterns = [
+            r"answer:\s*\(?[A-E]\)?",  # "Answer: A" or "Answer: (A)"
+            r"the answer is\s*\(?[A-E]\)?",  # "The answer is A"
+            r"final answer:\s*\(?[A-E]\)?",  # "Final answer: A"
+            r"correct answer:\s*\(?[A-E]\)?",  # "Correct answer: A"
+            r"^[A-E]\s*$",  # Standalone letter at start of line (with line boundaries)
+        ]
+        
+        reasoning = output
+        for pattern in answer_patterns:
+            # Find the first occurrence of any answer pattern
+            match = re.search(pattern, reasoning, re.IGNORECASE | re.MULTILINE)
+            if match:
+                # Keep everything before the answer
+                reasoning = reasoning[:match.start()].strip()
+                break
+        
+        return reasoning
+    
+    def _get_wrong_answer(self, problem: MCQAProblem) -> str:
+        """
+        Get a wrong answer option for the problem.
+        Uses problem_id to ensure deterministic selection across runs.
+        
+        This is a shared utility method for paradigms that need to select
+        a wrong answer deterministically.
+        """
+        options = [opt for opt in problem.options if opt != problem.correct_answer]
+        # Use problem_id hash to deterministically select wrong answer
+        # This ensures same wrong answer is used for same problem across runs
+        hash_val = hash(problem.id) % len(options)
+        return options[hash_val]
 

@@ -51,6 +51,16 @@ MODEL_CONFIGS = {
         model_path="Qwen/Qwen3-1.7B",
         max_model_len=8192,
     ),
+    "Qwen3-14B": ModelConfig(
+        name="Qwen3-14B",
+        model_path="Qwen/Qwen3-14B",
+        max_model_len=8192,
+    ),
+    "Qwen3-32B": ModelConfig(
+        name="Qwen3-32B",
+        model_path="Qwen/Qwen3-32B",
+        max_model_len=8192,
+    ),
     "DeepSeek-R1-Distill-Qwen-7B": ModelConfig(
         name="DeepSeek-R1-Distill-Qwen-7B",
         model_path="deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",

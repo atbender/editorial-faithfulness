@@ -3,25 +3,37 @@
 set -e
 
 # Default configuration
-PARADIGM="ethical_information_access"
+PARADIGM="ethical_information_access authority_bias reframing_bias"
 QUESTIONS_FILE="data/mcqa-entries.json"
 MODEL="Qwen3-1.7B Qwen3-4B Qwen3-8B"
 ENGINE="vllm"
 API_URL="http://localhost:8000/v1/chat/completions"
-K_RUNS="5"
+K_RUNS="10"
 OUTPUT_DIR="results"
 SEED="42"
 TEMPERATURE="0.7"
-MAX_TOKENS="32"
+MAX_TOKENS="512"
 
+PARADIGMS_ARGS=()
 MODELS_ARGS=()
 EXTRA_ARGS=()
 
 while [[ $# -gt 0 ]]; do
     case $1 in
         --paradigm|-p)
-            PARADIGM="$2"
-            shift 2
+            shift
+            while [[ $# -gt 0 ]] && [[ ! "$1" =~ ^-- ]]; do
+                # Handle comma-separated values
+                if [[ "$1" == *,* ]]; then
+                    IFS=',' read -ra PARADIGM_VALUES <<< "$1"
+                    for val in "${PARADIGM_VALUES[@]}"; do
+                        PARADIGMS_ARGS+=("$val")
+                    done
+                else
+                    PARADIGMS_ARGS+=("$1")
+                fi
+                shift
+            done
             ;;
         --questions|-q)
             QUESTIONS_FILE="$2"
@@ -74,12 +86,12 @@ Usage:
     $0 [OPTIONS]
 
 Options:
-    --paradigm, -p PARADIGM          Paradigm to run (default: ethical_information_access)
+    --paradigm, -p PARADIGM [PARADIGM ...]  Paradigm(s) to run, can specify multiple or comma-separated (default: ethical_information_access authority_bias)
     --questions, -q FILE            Questions JSON file (default: data/mcqa-entries.json)
-    --models, -m MODEL [MODEL ...]  Model name(s) to evaluate (default: Qwen3-1.7B Qwen3-4B Qwen3-8B)
+    --models, -m MODEL [MODEL ...]  Model name(s) to evaluate (default: Qwen3-1.7B Qwen3-4B Qwen3-8B Qwen3-14B Qwen3-32B)
     --engine ENGINE                 Engine type: http or vllm (default: vllm)
     --api-url URL                   API URL for HTTP engine
-    --k-runs, -k N                  Number of runs per condition (default: 5)
+    --k-runs, -k N                  Number of runs per condition (default: 10)
     --output-dir, -o DIR            Output directory (default: results)
     --seed, -s N                    Random seed (default: 42)
     --temperature, -t FLOAT         Sampling temperature (default: 0.7)
@@ -93,6 +105,8 @@ Examples:
     $0 --engine http --models Qwen3-4B
     $0 --paradigm ethical_information_access --questions data/mcqa-entries.json \\
        --models Qwen3-4B Qwen3-8B --k-runs 10 --temperature 0.8
+    $0 --paradigm ethical_information_access authority_bias
+    $0 --paradigm ethical_information_access,authority_bias
 
 Environment Variables:
     PARADIGM, QUESTIONS_FILE, MODEL, ENGINE, API_URL, K_RUNS,
@@ -107,17 +121,28 @@ EOF
     esac
 done
 
-if [[ ${#MODELS_ARGS[@]} -gt 0 ]]; then
-    MODELS_STR="${MODELS_ARGS[*]}"
+# Build paradigms array
+if [[ ${#PARADIGMS_ARGS[@]} -gt 0 ]]; then
+    PARADIGMS_LIST=("${PARADIGMS_ARGS[@]}")
 else
-    MODELS_STR="$MODEL"
+    # Split default PARADIGM string into array
+    read -ra PARADIGMS_LIST <<< "$PARADIGM"
 fi
 
+# Build models array
+if [[ ${#MODELS_ARGS[@]} -gt 0 ]]; then
+    MODELS_LIST=("${MODELS_ARGS[@]}")
+else
+    # Split default MODEL string into array
+    read -ra MODELS_LIST <<< "$MODEL"
+fi
+
+# Build command
 CMD=(
     python3 run_experiment.py
-    --paradigm "$PARADIGM"
+    --paradigm "${PARADIGMS_LIST[@]}"
     --questions "$QUESTIONS_FILE"
-    --models $MODELS_STR
+    --models "${MODELS_LIST[@]}"
     --engine "$ENGINE"
     --k-runs "$K_RUNS"
     --output-dir "$OUTPUT_DIR"

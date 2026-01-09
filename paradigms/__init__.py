@@ -10,6 +10,8 @@ from .base import (
 )
 
 from .ethical_information_access import EthicalInformationAccessParadigm
+from .authority_bias import AuthorityBiasParadigm
+from .reframing_bias import ReframingBiasParadigm
 
 __all__ = [
     # Base classes
@@ -21,5 +23,7 @@ __all__ = [
     "BASE_INSTRUCTION",
     # Paradigms
     "EthicalInformationAccessParadigm",
+    "AuthorityBiasParadigm",
+    "ReframingBiasParadigm",
 ]
 
